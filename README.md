@@ -4,34 +4,24 @@ Capstone Project for Galvanize Data Science Immersive
 
 by Matt Devor
 
-### ADD TOC
-### Sanity check
-### Add Coeff explanation when deciding on final model
-### focus on coefficient interpretation
-### plot coeffs vs. cutoffs?
-### Add links to songs
-### Spell check
-
 # Introduction
 Music has always been an integral part of my life. I can still remember the first time I heard the band Phish in high school, and from there something ‘clicked’, and my musical tastes branched out widely from just alt-rock to jazz, funk, progressive rock, bluegrass, and many other genres. 
 
-However, my personal musical tastes often differ quite drastically from what is popular in the mainstream. As such, I have always been fascinated by `why` certain songs are popular. I.e., what is it about certain songs that causes them to have billions of listens?
+However, my personal musical tastes often differ quite drastically from what is popular in the mainstream. As such, I have always been fascinated by **why** certain songs are popular. I.e., what is it about certain songs that causes them to have billions of listens?
 
 ![](images/music_brain.png)
 
 Spotify is a digital music service that enables users to remotely source millions of different songs on various record labels from a laptop, smartphone or other device. To recommend new music to users, and to be able to internally classify songs, Spotify assigns each song values from 13 different attributes/features. These features are mostly numerical values, but include some categorical data as well (the key the song is in, for instance). Spotify also assigns each song a popularity score, based on total number of clicks/listens. 
 
-I’ve found a dataset of 100,000+ songs from Spotify, which includes a popularity score and set of metrics/attributes per song. From looking through that data, I thought there might be a very interesting opportunity to take a deep dive into what attributes make a song popular. 
+I discovered a Kaggle dataset of 100,000+ songs from Spotify (located [here](https://www.kaggle.com/tomigelo/spotify-audio-features/home)), which includes a popularity score and set of metrics/attributes for each song. From looking through that data, I thought there might be a very interesting opportunity to take a deep dive into what attributes make a song popular. 
 
-# Strategy
+# Strategy and Process
 - Overview of Data
 - Exploratory Data Analysis
-- Determine most important attributes
 - Linear Regression to predict popularity score
 - Undersampling
 - Logistic Regression to predict popular/not popular
 - Be able to **accurately** predict if a song will be popular or not!
-- Make revenue predictions from logistic model.
 
 # Overview of the Data
 - This dataset has 116,191 unique songs.
@@ -42,18 +32,18 @@ I’ve found a dataset of 100,000+ songs from Spotify, which includes a populari
 ### Descriptions of the 13 unique numerical attributes for each song:
 |Attribute | Mean | Std Dev |Description|
 |--- | --- | --- | --- |
-|1 - Acousticness (float) |  |  | A confidence measure from 0.0 to 1.0 of whether the track is acoustic.|
-|2 - Danceability (float)|  |  | Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity.|
-|3 - duration_ms (int)| | | Duration of the track in ms|
-|4 - energy (float)| | | Energy is a measure from 0.0 to 1.0 and represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy.|
-|5 - instrumentalness (float) | | | Predicts whether a track contains no vocals. “Ooh” and “aah” sounds are treated as instrumental in this context. 
-|6 - key (int)| | | The estimated overall key of the track.|
-|7 - liveness (float)| | |Detects the presence of an audience in the recording. Higher liveness values represent an increased probability that the track was performed live.| 
-|8 - loudness| | | The overall loudness of a track in decibels (dB)
-|9 - mode (int)| | | Mode indicates the modality (major or minor) of a track, the type of scale from which its melodic content is derived.|
-|10 - speechiness (float)| | | Speechiness detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value.
-|11 - tempo (int)| | | The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration.
-|12 - time signature (int)| | | An estimated overall time signature of a track.| 
+|1 - Acousticness (float) |0.34|0.34| A confidence measure from 0.0 to 1.0 of whether the track is acoustic.|
+|2 - Danceability (float)|0.58|0.18| Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity.|
+|3 - duration_ms (int)| 212546| 124320| Duration of the track in ms|
+|4 - energy (float)|0.57 |0.26 | Energy is a measure from 0.0 to 1.0 and represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy.|
+|5 - instrumentalness (float) |0.23 |0.36 | Predicts whether a track contains no vocals. “Ooh” and “aah” sounds are treated as instrumental in this context. 
+|6 - key (int)|5.24| 3.60| The estimated overall key of the track.|
+|7 - liveness (float)|0.19 | 0.17 |Detects the presence of an audience in the recording. Higher liveness values represent an increased probability that the track was performed live.| 
+|8 - loudness| -9.94 | 6.50| The overall loudness of a track in decibels (dB)
+|9 - mode (int)| 0.61| 0.49| Mode indicates the modality (major or minor) of a track, the type of scale from which its melodic content is derived.|
+|10 - speechiness (float)| 0.11| 0.12| Speechiness detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value.
+|11 - tempo (int)|119.60 |30.15 | The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration.
+|12 - time signature (int)| 3.88| 0.51| An estimated overall time signature of a track.| 
 |13 - valence (float) | | | A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).| 
 
 # Exploratory Data Analysis:
@@ -74,7 +64,7 @@ I also wanted to take a look at any potential multicolinearity issues within my 
 ![](images/heatmap.png)
 
 ## EDA Takeaways
-- Distribution of dependent variable is quite unbalanced, and this will make it difficult for a model to predict the very popular songs, becuase there are less popular songs to train on.
+- Distribution of dependent variable is quite unbalanced, and this will make it difficult for a model to predict the very popular songs, because there are less popular songs to train on.
   - Only 0.2% of songs have a popularity score > 80.
   - Undersampling might be crucial to creating a good model.
 - No actual *null* values, but plenty of zeros for each feature, which could be interpreted as missing data.
@@ -163,6 +153,7 @@ The next part of my capstone was mainly focused on how R^2 values and variable c
 I found it very fascinating how much a a difference undersampling had on the accuracy of my model, but there was definitely a tradeoff: as the cutoff grew, the total number of samples got smaller, which makes sense becuase there aren't many popular songs in the dataset. As such, the p-values of quite a few of my independent variables started showing that they were becoming less significant. So, even though R^2 was getting better, the possible ranges for my coefficients were getting larger.
 
 This table illustrates this point:
+
 |Model | R^2 | Danceability Coeff| Danceability p-value|Danceability Coeff Range|
 | --- | --- | --- | --- | ---|
 |First Linear Model | 0.08 | 5.64 | 0.00 | 4.96 - 6.32|
@@ -269,7 +260,8 @@ Equations for Logistic Regression Metrics:
 - Precision = Precision = Σ True positive / Σ Predicted condition positive
 - Recall / TPR / Sensitivity = Σ True positive / Σ Condition positive
 
-Metrics for final logistic regression model:
+Metrics for final logistic regression model at a threshold of 0.5:
+
 |Metric | Training Dataset |  Test Dataset|
 | --- | --- | --- |
 |Auc| 0.86 | 0.79|
@@ -282,24 +274,47 @@ ROC curve for best logistic regression model:
 ![](images/roc_80.png)
 
 
-### Song that my model predicted was popular, that is indeed popular (True Positive):
+#### Song that my model predicted was popular, that is indeed popular (True Positive):
+https://www.youtube.com/watch?v=bIv16itYi_0
 
-### Song that my model predicted was popular, that is not actually popular (False Positive):
+#### Song that my model predicted was popular, that is not actually popular (False Positive):
+#### (Note the model was 68% sure this song had a popularity score of 80 or greater!)
+https://www.youtube.com/watch?v=3uTirCgKEQ8
 
-### Song that my model predicted was not popular, that is indeed popular (False Negative):
+#### Song that my model predicted was not popular, that is indeed popular (False Negative):
+https://www.youtube.com/watch?v=-pMa_wfv7_o
 
-### Song that my model predicted was not popular, that is not popular (True Negative):
+#### Song that my model predicted was not popular, that is not popular (True Negative):
+https://www.youtube.com/watch?v=ZgXCphQGNg4
 
-### Interpretation of Coefficients:
+### Final Coefficients and Interpretation:
+Overall it seems that danceability is still the most important feature when predicting popularity. Energy and instrumentalness were important predictors as well, but with negative magnitudes, indicating that, all else equal, a one-unit increase in either of those will result in a decrease in the odds of a song being popular. Loudness also seems to be a big indicator, which is a bit surprising, and is potentially more indicative of the db level in which most "popular" songs are mixed at. Below is a plot of final coefficient magnitudes. I chose to do absolute magnitudes instead of exponentiated magnitudes, in order to better illustrate the direction an increase in each coefficient will have on the odds of a song being popular.
 
-# Incorporating Logisitic Regression into Revenue Prediction
+![](images/coefs.png)
+
+All else equal, a 0.1 unit increase in a feature value will cause the following change in the probability of the popularity score being >= 80:
+
+| Metric| Change in probability of popularity score being >= 80|
+|---|---|
+|Danceability| 8%|
+|energy| -5%| 
+|instrumentalness| -5%| 
+|liveness| -2%|
+|valence | -1.7%|
 
 
 # Reflection and Future Work
 ## Reflection
-- It is quite difficult to determine if a song will be a popular or not, and there appear to be many other factors at play that are not necessarily included in this dataset.
-- Other factors that influence if a song will be popular, such as:
+- Overall, this was a very fun dataset to work with, and I am pleasantly surprised that I actually obtained fairly accurate results, especially with the logistic model.
+- It is quite difficult to determine if a song will be a popular or not, and there appear to be other factors at play that are not necessarily included in this dataset.
+- Other factors that influence if a song will be popular or not could potentially be:
   - Does a particular artist have any current name recognition?
   - Has this artist had any previous hits?
   - What is this artist's genre of music?
-  - Has this artist colloborated with other popular artists?
+  - Has this artist collaborated with other popular artists?
+- I assume that merging the data I have now with answers to some of the above questions would definitely allow for a much more accurate prediction of popularity scores.
+
+## Furure Work
+- I think it would be interesting to see if I could create a bridge between my logistic regression model into some sort of revenue prediction model.
+- This could potentially be useful to those within the music industry to be able to predict of a song will be popular or not, and estimate potential revenues accordingly.
+- I also think it would be fascinating to have a tool like this in the recording studio, which would allow artists to create some sort of popularity score feedback loop as they are creating new material.
