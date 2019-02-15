@@ -318,7 +318,7 @@ ROC curve for best logistic regression model:
 - Song that my model predicted was not popular, that is not popular [True Negative](https://youtu.be/ZgXCphQGNg4?t=16)
 
 ## Final Coefficients and Interpretation:
-Overall it seems that danceability is still the most important feature when predicting popularity. Energy and instrumentalness were important predictors as well, but with negative magnitudes, indicating that, all else equal, a one-unit increase in either of those will result in a decrease in the odds of a song being popular. Loudness also seems to be a big indicator, which is a bit surprising, and is potentially more indicative of the db level in which most "popular" songs are mixed at. Below is a plot of final coefficient magnitudes. I chose to do absolute magnitudes instead of exponentiated magnitudes, in order to better illustrate the direction an increase in each coefficient will have on the odds of a song being popular.
+Overall it seems that danceability is still the most important feature when predicting popularity. Energy and instrumentalness were important predictors as well, but with negative magnitudes, indicating that, all else equal, a one-unit increase in either of those will result in a decrease in the odds of a song being popular. Loudness also seems to be a big indicator, which is a bit surprising, and is potentially more indicative of the db level in which most "popular" songs are mixed at. Here are the final coefficient values for each of the feature variables:
 
 | Feature| Coefficient Value|
 |---|---|
@@ -336,6 +336,7 @@ tempo |-0.05|
 time_signature|0.01|
 valence |-0.72|
 
+Below is a plot of final coefficient magnitudes. I chose to do absolute magnitudes instead of exponentiated magnitudes, in order to better illustrate the direction an increase in each coefficient will have on the odds of a song being popular.
 ![](images/coefs.png)
 
 All else equal, a 0.1 unit increase in a feature value will cause the following change in the probability of the song being popular (in this case, having a popularity score >= 80):
