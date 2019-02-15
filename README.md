@@ -293,17 +293,35 @@ ROC curve for best logistic regression model:
 ### Final Coefficients and Interpretation:
 Overall it seems that danceability is still the most important feature when predicting popularity. Energy and instrumentalness were important predictors as well, but with negative magnitudes, indicating that, all else equal, a one-unit increase in either of those will result in a decrease in the odds of a song being popular. Loudness also seems to be a big indicator, which is a bit surprising, and is potentially more indicative of the db level in which most "popular" songs are mixed at. Below is a plot of final coefficient magnitudes. I chose to do absolute magnitudes instead of exponentiated magnitudes, in order to better illustrate the direction an increase in each coefficient will have on the odds of a song being popular.
 
+| Feature| Coefficient Value|
+|---|---|
+|acousticness | 0.53|
+danceability | 3.20|
+duration_ms | 0.20|
+energy | -2.24|
+instrumentalness |-2.10|
+key |0.01|
+liveness |-1.01|
+loudness |1.89|
+mode |-0.06|
+speechiness |0.14|
+tempo |-0.05|
+time_signature|0.01|
+valence |-0.72|
+
 ![](images/coefs.png)
 
-All else equal, a 0.1 unit increase in a feature value will cause the following change in the probability of the popularity score being >= 80:
+All else equal, a 0.1 unit increase in a feature value will cause the following change in the probability of the song being popular (in this case, having a popularity score >= 80):
 
-| Metric| Delta in prob of pop score being >= 80|
+| Feature| Probability Delta|
 |---|---|
-|Danceability| 8%|
+|Danceability| +8%|
 |energy| -5%| 
 |instrumentalness| -5%| 
 |liveness| -2%|
+|loudness|+5%|
 |valence | -1.7%|
+| all others| <1%|
 
 
 # Reflection and Future Work
