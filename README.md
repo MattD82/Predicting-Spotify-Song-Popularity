@@ -4,6 +4,23 @@ Capstone Project for Galvanize Data Science Immersive
 
 by Matt Devor
 
+## Table of Contents
+- [Introduction](#introduction)
+- [Strategy and Process](#strategy-and-process)
+- [Overview of the Data](#overview-of-the-data)
+    + [Descriptions of features](#descriptions-of-the-13-unique-numerical-attributes-for-each-song-)
+- [Exploratory Data Analysis](#exploratory-data-analysis-)
+  * [EDA Takeaways](#eda-takeaways)
+- [First Model: Linear Regression](#first-model--linear-regression)
+- [Undersampling](#undersampling)
+- [Second Model: Logistic Regression](#second-model--logistic-regression)
+  * [Selected songs from model predictions](#selected-songs-from-model-predictions-)
+  * [Final Coefficients and Interpretation](#final-coefficients-and-interpretation-)
+- [Reflection and Future Work](#reflection-and-future-work)
+  * [Reflection](#reflection)
+  * [Future Work](#future-work)
+
+
 # Introduction
 Music has always been an integral part of my life. I can still remember the first time I heard the band Phish in high school, and from there something ‘clicked’, and my musical tastes branched out widely from just alt-rock to jazz, funk, progressive rock, bluegrass, and many other genres. 
 
@@ -14,6 +31,8 @@ However, my personal musical tastes often differ quite drastically from what is 
 Spotify is a digital music service that enables users to remotely source millions of different songs on various record labels from a laptop, smartphone or other device. To recommend new music to users, and to be able to internally classify songs, Spotify assigns each song values from 13 different attributes/features. These features are mostly numerical values, but include some categorical data as well (the key the song is in, for instance). Spotify also assigns each song a popularity score, based on total number of clicks/listens. 
 
 I discovered a Kaggle dataset of 100,000+ songs from Spotify (located [here](https://www.kaggle.com/tomigelo/spotify-audio-features/home)), which includes a popularity score and set of metrics/attributes for each song. From looking through that data, I thought there might be a very interesting opportunity to take a deep dive into what attributes make a song popular. 
+
+[Back to Top](#Table-of-Contents)
 
 # Strategy and Process
 - Overview of Data
@@ -46,7 +65,9 @@ I discovered a Kaggle dataset of 100,000+ songs from Spotify (located [here](htt
 |12 - time signature (int)| 3.88| 0.51| An estimated overall time signature of a track.| 
 |13 - valence (float) | 0.44 | 0.26| A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).| 
 
-# Exploratory Data Analysis:
+[Back to Top](#Table-of-Contents)
+
+# Exploratory Data Analysis
 I first took a look at how the popularity scores were distributed, and one thing I noticed right away is that most of the songs are not very popular. In fact, the majority of them have a popularity score less than 40, with the mean popularity score at a value of 24. As such, it appears that this dataset is quite unbalanced, in that only a small proportion of the songs (less than 10%) have a popularity score > 55. The following figure illustrates this point:
 
 ![](images/popularity_dist_f1.png)
@@ -70,6 +91,8 @@ I also wanted to take a look at any potential multicolinearity issues within my 
 - No actual *null* values, but plenty of zeros for each feature, which could be interpreted as missing data.
 - Almost 1/10 of the songs have a popularity score of zero. This could cause problems when training the model
 - Heatmap shows some potential multicollinearity between energy and valence.
+
+[Back to Top](#Table-of-Contents)
 
 # First Model: Linear Regression
 For my first modeling effort, I decided to go with a linear regression. This was initially chosen because I wanted to predict the exact popularity score a song will have, and becuase I noticed "some" correlation between the independent variables (the 13 attributes), and the dependent variable (popularity). For this process, I first split the entire dataset using train-test-split, holding out 20% of the data to eventually be used as a test. I then went through a systematic process of adding and removing features, transforming features, and filtering the data, attempting to bring up the abysmally low R^2 values I was getting.
@@ -136,6 +159,8 @@ Features not moving the needle much:
 - mode
 - tempo
 - time_signature
+
+[Back to Top](#Table-of-Contents)
 
 # Undersampling
 As mentioned above, the biggest problem with this initial approach was the fact that with such unbalanced data, predicting the highest and lowest popularity values was extremely difficult.
@@ -236,6 +261,8 @@ So, overall, not a great model, and certainly not one you'd want to rely on for 
 
 Overall, it seems that songs with a high danceability value are more likely to be popular, while energy and instrumentalness can lower the score. If a song has too high of a level of speechiness, that will bring down the score as well, as will too high of a valence score, or if a song is too "happy". 
 
+[Back to Top](#Table-of-Contents)
+
 # Second Model: Logistic Regression
 Since my linear regression model wasn't as accurate as I was hoping for, I decided to see if I could create a logistic regression model, in order to predict 'Popular' or 'Not Popular', using samples taken from my larger dataset, sampled by the cutoff methodology. Basically, all songs that had a popularity score at or above the popularity score cutoff were flagged as having a popularity binary value of 1, and all songs below the cutoff were flagged as having a 0. The process of setting the cutoff, sampling, running the logistic regression, and then evaluating the outputs of the model was repeated for several different cutoff points, and I ended up with some promising results.
 
@@ -290,7 +317,7 @@ ROC curve for best logistic regression model:
 
 - Song that my model predicted was not popular, that is not popular [True Negative](https://youtu.be/ZgXCphQGNg4?t=16)
 
-### Final Coefficients and Interpretation:
+## Final Coefficients and Interpretation:
 Overall it seems that danceability is still the most important feature when predicting popularity. Energy and instrumentalness were important predictors as well, but with negative magnitudes, indicating that, all else equal, a one-unit increase in either of those will result in a decrease in the odds of a song being popular. Loudness also seems to be a big indicator, which is a bit surprising, and is potentially more indicative of the db level in which most "popular" songs are mixed at. Below is a plot of final coefficient magnitudes. I chose to do absolute magnitudes instead of exponentiated magnitudes, in order to better illustrate the direction an increase in each coefficient will have on the odds of a song being popular.
 
 | Feature| Coefficient Value|
@@ -323,6 +350,7 @@ All else equal, a 0.1 unit increase in a feature value will cause the following 
 |valence | -1.7%|
 | all others| <1%|
 
+[Back to Top](#Table-of-Contents)
 
 # Reflection and Future Work
 ## Reflection
@@ -339,3 +367,5 @@ All else equal, a 0.1 unit increase in a feature value will cause the following 
 - I think it would be interesting to see if I could create a bridge between my logistic regression model into some sort of revenue prediction model.
 - This could potentially be useful to those within the music industry to be able to predict of a song will be popular or not, and estimate potential revenues accordingly.
 - I also think it would be fascinating to have a tool like this in the recording studio, which would allow artists to create some sort of popularity score feedback loop as they are creating new material.
+
+[Back to Top](#Table-of-Contents)
